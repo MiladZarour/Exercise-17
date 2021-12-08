@@ -21,7 +21,7 @@ jobs:
         run: make
       - name: Run The expression_test
         run: make test_expr
-      - name: Run The expression_test
+      - name: Run The stack_test
         run: make test_stack
       - name: Upload The Program
         uses: actions/upload-artifact@v2.2.3
@@ -30,4 +30,4 @@ jobs:
           path: |
             build/main.exe
             build/test_stack.exe
-            build/build/test
+            build/expression_test.exe
