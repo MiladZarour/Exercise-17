@@ -6,19 +6,18 @@ static char stack[STACK_SIZE] = {0};
 void stack_clear(void)
 {
     top = -1;
-    (void)stack;
 }
 
 bool stack_push(char ch)
 {
     bool status = false;
-
+    (void)ch;
+    (void)stack;
     return status;
 }
 
 char stack_pop(void)
 {
     char ch = '\0';
-
     return ch;
 }
