@@ -1,85 +1,98 @@
-# The Makefile to build test and main and run the test
-
+# compiler
 CC := gcc
-CFLAGS := -Wall
 
+# compiler flags
+CFLAGS := -Wall -Wextra -Wpedantic -Werror
+
+# folders
 LIB_DIR := lib
 SRC_DIR := src
 TEST_DIR := test
 BUILD_DIR := build
 
-EXPRESSION_EXE := expression_test
-STACK_EXE := stack_test
-MAIN_EXE := main
+# programs
+MAIN_EXE := main.exe
+TEST_STACK_EXE := test_stack.exe
+TEST_EXPR_EXE := test_expr.exe
 
-INCLUDES := $(addprefix -I./,$(wildcard $(LIB_DIR)/*)) -I./src/expression
+INCLUDES := $(wildcard $(LIB_DIR)/*) $(wildcard $(SRC_DIR)/*)
+INCLUDES := $(addprefix -I./, $(INCLUDES))
 
-TEST_OBJS := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(wildcard $(TEST_DIR)/*.c))
-TEST_OBJS := $(addprefix $(BUILD_DIR)/,$(TEST_OBJS:.c=.o))
+# OBJECTS_MAIN := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*.c))
+# OBJECTS_MAIN := $(addprefix $(BUILD_DIR)/,$(OBJECTS_MAIN:.c=.o))
+OBJECTS_MAIN := build/stack.o build/expression.o build/main.o
 
-PROG_OBJS := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c))
-PROG_OBJS := $(addprefix $(BUILD_DIR)/,$(PROG_OBJS:.c=.o))
+OBJECTS_EXPR := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(TEST_DIR)/expression_test.c)
+OBJECTS_EXPR := $(addprefix $(BUILD_DIR)/,$(OBJECTS_EXPR:.c=.o))
 
-all: .mkbuild $(MAIN_EXE) $(TEST_EXE)
-	@echo "************ The Targets ************"
-	@echo "** clean: to clean"
-	@echo "** check_expression: to run the check_expression"
-	@echo "** check_stack: to run the check_stack"
-#	@echo "** run NUM=xxx: to run the program"
-	@echo "*************************************"
+OBJECTS_STACK := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(TEST_DIR)/stack_test.c)
+OBJECTS_STACK := $(addprefix $(BUILD_DIR)/,$(OBJECTS_STACK:.c=.o))
 
-$(MAIN_EXE): build/expression.o build/main.o build/stack.o    
+all:
+	@clear
+	@echo "***************** The Targets *******************************"
+	@echo "** make clean: to clean                                    **"
+	@echo "** make run: to build and run the program                  **"
+	@echo "** make test_expr: to build and test the expression module **"
+	@echo "** make test_stack: to build and test the stack module     **"
+	@echo "*************************************************************"
+
+run: .mkbuild $(MAIN_EXE)
+	@echo ""
+	@echo "**************************************"
+	@echo "** Run main programm     *************"
+	@echo "**************************************"
+	@echo ""
+	@./$(BUILD_DIR)/$(MAIN_EXE) "(10 + 20 * (3+4))"
+
+test_expr: .mkbuild $(TEST_EXPR_EXE)
+	@echo ""
+	@echo "**************************************"
+	@echo "** Run Test: Expression  *************"
+	@echo "**************************************"
+	@echo ""
+	@./$(BUILD_DIR)/$(TEST_EXPR_EXE)
+
+test_stack: .mkbuild $(TEST_STACK_EXE)
+	@echo ""
+	@echo "**************************************"
+	@echo "** Run Test: Stack       *************"
+	@echo "**************************************"
+	@echo ""
+	@./$(BUILD_DIR)/$(TEST_STACK_EXE)
+
+# program
+$(MAIN_EXE): $(OBJECTS_MAIN)
 	$(CC) $^ -o $(BUILD_DIR)/$@
 
-$(STACK_EXE): bukd
+# test satck
+$(TEST_STACK_EXE): $(OBJECTS_STACK)
 	$(CC) $^ -o $(BUILD_DIR)/$@
 
-$(EXPRESSION_EXE): $(TEST_OBJS)
+# test expr
+$(TEST_EXPR_EXE): $(OBJECTS_EXPR)
 	$(CC) $^ -o $(BUILD_DIR)/$@
 
-LIB_SRC := $(LIB_DIR)/*
-$(BUILD_DIR)/%.o: $(LIB_SRC)/%.c
-	$(CC) -MMD $(CFLAGS) -o $@  -c $<
+# objects in lib/*
+$(BUILD_DIR)/%.o: $(LIB_DIR)/*/%.c
+	$(CC) -MMD $(CFLAGS) -o $@ -c $<
 
-SRC_SRC := $(SRC_DIR)/*
-$(BUILD_DIR)/%.o: $(SRC_SRC)/%.c
+# objects in src/*
+$(BUILD_DIR)/%.o: $(SRC_DIR)/*/%.c
 	$(CC) -MMD $(CFLAGS) -o $@ $(INCLUDES) -c $<
 
+# objects in src
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	$(CC) -MMD $(CFLAGS) -o $@ $(INCLUDES) -c $<
+
+# objects in test
 $(BUILD_DIR)/%.o : $(TEST_DIR)/%.c
 	$(CC) -MMD $(CFLAGS) -o $@ $(INCLUDES) -c $<
-
-$(BUILD_DIR)/%.o : $(SRC_DIR)/%.c
-	$(CC) -MMD $(CFLAGS) -o $@ $(INCLUDES) -c $<
-
-# run: .mkbuild $(MAIN_EXE)
-# 	@echo ""
-# 	@echo "**************************************"
-# 	@echo "********* Run The Program ************"
-# 	@echo "**************************************"
-# 	@echo ""
-# 	@./$(BUILD_DIR)/$(MAIN_EXE) $(NUM)
-
-check_expression: .mkbuild $(EXPRESSION_EXE)
-	@echo ""
-	@echo "**************************************"
-	@echo "********** Run The Test Expression**************"
-	@echo "**************************************"
-	@echo ""
-	@./$(BUILD_DIR)/$(EXPRESSION_EXE)
-	
-check_stack: .mkbuild $(STACK_EXE)
-	@echo ""
-	@echo "**************************************"
-	@echo "********** Run The Test Stack**************"
-	@echo "**************************************"
-	@echo ""
-	@./$(BUILD_DIR)/$(STACK_EXE)
-	
 
 # Include automatically generated dependencies
 -include $(OBJECTS:.o=.d)
 
-.PHONY: clean .mkbuild check all
+.PHONY: clean mkbuild all run test_expr test_stack
 
 clean:
 	@rm -rf $(BUILD_DIR)
