@@ -22,7 +22,7 @@ INCLUDES := $(addprefix -I./, $(INCLUDES))
 # OBJECTS_MAIN := $(addprefix $(BUILD_DIR)/,$(OBJECTS_MAIN:.c=.o))
 OBJECTS_MAIN := build/stack.o build/expression.o build/main.o
 
-OBJECTS_EXPR := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(TEST_DIR)/expression_test.c)
+OBJECTS_EXPR := $(notdir $(wildcard $(LIB_DIR)/*/*.c $(wildcard $(SRC_DIR)/*/*.c)) $(TEST_DIR)/expression_test.c)
 OBJECTS_EXPR := $(addprefix $(BUILD_DIR)/,$(OBJECTS_EXPR:.c=.o))
 
 OBJECTS_STACK := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(TEST_DIR)/stack_test.c)
