@@ -18,7 +18,6 @@ bool stack_push(char ch)
         top++;
         stack[top] = ch;
     }
-
     return status;
 }
 
@@ -31,6 +30,5 @@ char stack_pop(void)
         ch = stack[top];
         top--;
     }
-
     return ch;
 }
