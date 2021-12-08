@@ -2,7 +2,7 @@
 CC := gcc
 
 # compiler flags
-CFLAGS := -Wall -Wextra -Wpedantic -Werror
+CFLAGS := -Wall -Wextra -Wpedantic -Werror $(CFLG)
 
 # folders
 LIB_DIR := lib
