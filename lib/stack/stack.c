@@ -6,12 +6,18 @@ static char stack[STACK_SIZE] = {0};
 void stack_clear(void)
 {
     top = -1;
-    (void)stack;
 }
 
 bool stack_push(char ch)
 {
     bool status = false;
+
+    if(top<STACK_SIZE)
+    {
+        status = true;
+        top++;
+        stack[top] = ch;
+    }
 
     return status;
 }
@@ -19,6 +25,12 @@ bool stack_push(char ch)
 char stack_pop(void)
 {
     char ch = '\0';
+
+    if(top>=0)
+    {
+        ch = stack[top];
+        top--;
+    }
 
     return ch;
 }
