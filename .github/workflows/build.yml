@@ -1,0 +1,33 @@
+name: Exercise17
+
+on:
+  push:
+    branches:
+      - Actions
+  pull_request:
+    branches:
+      - Actions
+
+jobs:
+  build:
+    name: Buil & Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Install
+        run: sudo apt-get install build-essential
+      - name: Build
+        run: make
+      - name: Run The expression_test
+        run: make test_expr
+      - name: Run The expression_test
+        run: make test_stack
+      - name: Upload The Program
+        uses: actions/upload-artifact@v2.2.3
+        with:
+          name: program
+          path: |
+            build/main.exe
+            build/test_stack.exe
+            build/build/test
