@@ -12,7 +12,7 @@ bool stack_push(char ch)
 {
     bool status = false;
 
-    if(top<STACK_SIZE)
+    if(top<STACK_SIZE-1)
     {
         status = true;
         top++;
