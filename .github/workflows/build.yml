@@ -1,4 +1,4 @@
-name: Exercise17
+name: Exercise17 - build
 
 on:
   push:
@@ -10,20 +10,20 @@ on:
 
 jobs:
   build:
-    name: Buil & Run
+    name: Build & Run
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2.3.4
       - name: Install
         run: sudo apt-get install build-essential
-      - name: Build
-        run: make
-      - name: Run The expression_test
+      - name: Build the main program
+        run: make run EXPR='2*(3+4)'
+      - name: Run the expression test
         run: make test_expr
-      - name: Run The stack_test
+      - name: Run the stack test
         run: make test_stack
-      - name: Upload The Program
+      - name: Upload the programs and tests
         uses: actions/upload-artifact@v2.2.3
         with:
           name: program & tests

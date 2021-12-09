@@ -1,4 +1,4 @@
-name: Release
+name: Exercise17 - release
 
 on:
   push:
@@ -18,12 +18,14 @@ jobs:
           sudo apt-get install build-essential
       - name: Build
         run: |
-          make
+          make run EXPR='2*(3+4)'
+          make test_expr
+          make test_stack
           cd build
-          zip program.zip main test
-      - name: Run The expression_test
+          zip program.zip main.exe test_expr.exe test_stack.exe
+      - name: Run the expression test
         run: make test_expr
-      - name: Run The stack_test
+      - name: Run the stack test
         run: make test_stack
       - name: Create Release
         uses: marvinpinto/action-automatic-releases@v1.1.1
