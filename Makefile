@@ -15,27 +15,34 @@ MAIN_EXE := main.exe
 TEST_STACK_EXE := test_stack.exe
 TEST_EXPR_EXE := test_expr.exe
 
+# parameter for the main program
+EXPR := 2*(3+4)
+
+# include flag for compiler
 INCLUDES := $(wildcard $(LIB_DIR)/*) $(wildcard $(SRC_DIR)/*)
 INCLUDES := $(addprefix -I./, $(INCLUDES))
 
+# objects for main program
 # OBJECTS_MAIN := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*.c))
 # OBJECTS_MAIN := $(addprefix $(BUILD_DIR)/,$(OBJECTS_MAIN:.c=.o))
 OBJECTS_MAIN := build/stack.o build/expression.o build/main.o
 
+# objects for test expressio
 OBJECTS_EXPR := $(notdir $(wildcard $(LIB_DIR)/*/*.c $(wildcard $(SRC_DIR)/*/*.c)) $(TEST_DIR)/expression_test.c)
 OBJECTS_EXPR := $(addprefix $(BUILD_DIR)/,$(OBJECTS_EXPR:.c=.o))
 
+# objects for test stack
 OBJECTS_STACK := $(notdir $(wildcard $(LIB_DIR)/*/*.c) $(TEST_DIR)/stack_test.c)
 OBJECTS_STACK := $(addprefix $(BUILD_DIR)/,$(OBJECTS_STACK:.c=.o))
 
 all:
 	@clear
-	@echo "***************** The Targets *******************************"
-	@echo "** make clean: to clean                                    **"
-	@echo "** make run: to build and run the program                  **"
-	@echo "** make test_expr: to build and test the expression module **"
-	@echo "** make test_stack: to build and test the stack module     **"
-	@echo "*************************************************************"
+	@echo "***************** The Targets **********************"
+	@echo "** make clean : to clean                          **"
+	@echo "** make run EXPR='2*(3+4)' : to run the program   **"
+	@echo "** make test_expr : to test the expression module **"
+	@echo "** make test_stack : to test the stack module     **"
+	@echo "****************************************************"
 
 run: .mkbuild $(MAIN_EXE)
 	@echo ""
@@ -43,7 +50,7 @@ run: .mkbuild $(MAIN_EXE)
 	@echo "** Run main programm     *************"
 	@echo "**************************************"
 	@echo ""
-	@./$(BUILD_DIR)/$(MAIN_EXE) "(10 + 20 * (3+4))"
+	@./$(BUILD_DIR)/$(MAIN_EXE) '$(EXPR)'
 
 test_expr: .mkbuild $(TEST_EXPR_EXE)
 	@echo ""
